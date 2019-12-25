@@ -11,11 +11,11 @@ namespace MessagePackTest.Models
     public class Phone
     {
         [Key(0)]
-        public string Number { get; }
+        public long Number { get; }
         [Key(1)]
         public PhoneType Type { get; }
 
-        public Phone(string number, PhoneType type)
+        public Phone(long number, PhoneType type)
         {
             Number = number;
             Type = type;

@@ -36,17 +36,21 @@ namespace MessagePackTest
                         "Reza", "Razavi", DateTime.Parse("10/13/1990"),
                         new List<Phone>
                         {
-                            new Phone("09123456789", PhoneType.CellPhone),
-                            new Phone("07612345678", PhoneType.Home)
-                        }, Grade.BS, "Sharif University of Technology"
+                            new Phone(09123456789, PhoneType.CellPhone),
+                            new Phone(07612345678, PhoneType.Home)
+                        }, Grade.BS, "Sharif University of Technology",
+                        new List<object>
+                        {
+                            (short)10, (float)19.5, (float)17.75, (float)19.25, (short)20, (float)14.4, (float)13.3, (float)12.6, (float)10.75, (float)19.8
+                        }
                     ),
                     new Person(
                         "Ali", "Alavi", DateTime.Parse("12/27/1973"),
                         new List<Phone>
                         {
-                            new Phone("09173454389", PhoneType.CellPhone),
-                            new Phone("07618547393", PhoneType.Work),
-                            new Phone("07328584578", PhoneType.Home)
+                            new Phone(09173454389, PhoneType.CellPhone),
+                            new Phone(07618547393, PhoneType.Work),
+                            new Phone(07328584578, PhoneType.Home)
                         }
                     )
                 }
@@ -62,8 +66,12 @@ namespace MessagePackTest
             //output.Close();
 
             var rawSerialized = MessagePackSerializer.Serialize(sut);
+            Console.WriteLine($"Raw serialized: {rawSerialized.Length} bytes\n{Encoding.ASCII.GetString(rawSerialized)}\n---------------------\n");
 
-            Console.WriteLine($"Raw serialized:\n{Encoding.ASCII.GetString(rawSerialized)}\n---------------------\n");
+
+            var json = MessagePackSerializer.ConvertToJson(new ReadOnlyMemory<byte>(rawSerialized));
+            Console.WriteLine($"json serialized: {Encoding.ASCII.GetBytes(json).Length} bytes\n{json}\n---------------------\n");
+
 
             //var input = File.OpenRead(DestinationPath + FileName);
 
