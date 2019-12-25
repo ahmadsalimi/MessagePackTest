@@ -1,4 +1,6 @@
-﻿namespace MessagePackTest
+﻿using MessagePack;
+
+namespace MessagePackTest
 {
     public enum Grade
     {

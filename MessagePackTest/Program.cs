@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MsgPack;
 using System.Diagnostics;
-using MsgPack.Serialization;
 using MessagePackTest.Models;
+using MessagePack;
 
 namespace MessagePackTest
 {
@@ -27,50 +26,50 @@ namespace MessagePackTest
                 File.Delete(DestinationPath + FileName);
             }
 
-            var personSerializer = MessagePackSerializer.Get<Person>();
-            var studentSerializer = MessagePackSerializer.Get<Student>();
+            //var serializer = MessagePackSerializer.Get<University>();
 
-            var rezaRazavi = new Student(
-                "Reza", "Razavi", DateTime.Parse("10/13/1990"),
-                new List<object>
+            var sut = new University(
+                "Sharif University of Technology",
+                new List<IPerson>
                 {
-                    new Phone("09123456789", PhoneType.CellPhone),
-                    new Phone("07612345678", PhoneType.Home)
-                }, Grade.BS, "Sharif University of Technology"
+                    new Student(
+                        "Reza", "Razavi", DateTime.Parse("10/13/1990"),
+                        new List<Phone>
+                        {
+                            new Phone("09123456789", PhoneType.CellPhone),
+                            new Phone("07612345678", PhoneType.Home)
+                        }, Grade.BS, "Sharif University of Technology"
+                    ),
+                    new Person(
+                        "Ali", "Alavi", DateTime.Parse("12/27/1973"),
+                        new List<Phone>
+                        {
+                            new Phone("09173454389", PhoneType.CellPhone),
+                            new Phone("07618547393", PhoneType.Work),
+                            new Phone("07328584578", PhoneType.Home)
+                        }
+                    )
+                }
             );
 
-            Console.WriteLine($"Original object befor serializing:\n{rezaRazavi}\n---------------------\n");
+            Console.WriteLine($"Original object befor serializing:\n{sut}\n---------------------\n");
 
-            var output = File.AppendText(DestinationPath + FileName);
+            //var output = File.AppendText(DestinationPath + FileName);
 
+            Console.WriteLine("Serializing\n---------------------\n");
+            //serializer.Pack(output.BaseStream, sut);
+            //output.Flush();
+            //output.Close();
 
-            Console.WriteLine("Serializing student as person\n---------------------\n");
-            personSerializer.Pack(output.BaseStream, rezaRazavi);
-            Console.WriteLine("Serializing student as student\n---------------------\n");
-            studentSerializer.Pack(output.BaseStream, rezaRazavi);
-            output.Flush();
-            output.Close();
+            var rawSerialized = MessagePackSerializer.Serialize(sut);
 
-            var input = File.OpenRead(DestinationPath + FileName);
+            Console.WriteLine($"Raw serialized:\n{Encoding.ASCII.GetString(rawSerialized)}\n---------------------\n");
 
-            var deserializedPerson = personSerializer.Unpack(input);
-            Console.WriteLine($"deserialized Person as Person:\n{deserializedPerson}\n---------------------\n");
+            //var input = File.OpenRead(DestinationPath + FileName);
 
-            try
-            {
-                var deserializedStudentAsPerson = personSerializer.Unpack(input);
-                Console.WriteLine($"deserialized Student as Person:\n{deserializedStudentAsPerson}\n---------------------\n");
-            }
-            catch
-            {
-                Console.WriteLine("Error in deserializing student object as person.\n---------------------\n");
-            }
-
-            input.Seek(0, SeekOrigin.Begin);
-            personSerializer.Unpack(input);
-
-            var deserializedStudent = studentSerializer.Unpack(input);
-            Console.WriteLine($"deserialized Student as Student:\n{deserializedStudent}\n---------------------\n");
+            //var deserializedSut = serializer.Unpack(input);
+            var deserializedSut = MessagePackSerializer.Deserialize(typeof(University), new ReadOnlyMemory<byte>(rawSerialized));
+            Console.WriteLine($"deserialized object:\n{deserializedSut}\n---------------------\n");
 
             Console.ReadKey(true);
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MessagePackTest.Models
 {
     [MessagePackObject]
-    public class Person
+    public class Person : IPerson
     {
         [Key(0)]
         public string Name { get; }
@@ -17,9 +17,9 @@ namespace MessagePackTest.Models
         [Key(2)]
         public DateTime BirthDay { get; }
         [Key(3)]
-        public List<object> Phones { get; } = new List<object>();
+        public List<Phone> Phones { get; }
 
-        public Person(string name, string familyName, DateTime birthDay, List<object> phones)
+        public Person(string name, string familyName, DateTime birthDay, List<Phone> phones)
         {
             Name = name;
             FamilyName = familyName;
